@@ -29,5 +29,11 @@ public class Bullet : MonoBehaviour
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
+        if (other.tag == "wall")
+        {
+            // 刪除自己
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
     }
 }

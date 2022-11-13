@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Bullet
   - Teleport
+  - wall
   layers:
   - Default
   - TransparentFX
