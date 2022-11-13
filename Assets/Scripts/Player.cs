@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 10;
-    public Joystick joyStick;
-    public Transform firePoint;
-    public GameObject bulletPrefab;
+    public Joystick joystick;
+    public GameObject bullet;
+    public GameObject firePoint;
+    public float ControlTime = 0;
 
-    private CharacterController controller;
+    private float passedTime = 0;
+    private float timerInterval = 0.3f;
+    private CharacterController cc;
 
     private GameObject focusEnemy;
 
     void Start()
     {
-        controller = GetComponent<CharacterController>();
-
-        // 開始一直射擊的 Coroutine 函式
-        StartCoroutine(KeepShooting());
+        cc = GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        // 找到最近的一個目標 Enemy 的物件
-        GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        if (ControlTime != 1)
+        {
+            GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
 
         float miniDist = 9999;
         foreach (GameObject enemy in enemys)
@@ -40,22 +40,12 @@ public class Player : MonoBehaviour
             }
         }
 
+            passedTime += Time.deltaTime;
+            float h = joystick.Horizontal;
+            float v = joystick.Vertical;
+            Vector3 dir = new Vector3(h, 0, v);
 
-
-        // 取得方向鍵輸入
-        // float h = Input.GetAxis("Horizontal");
-        // float v = Input.GetAxis("Vertical");
-
-        // 取得虛擬搖桿輸入
-        float h = joyStick.Horizontal;
-        float v = joyStick.Vertical;
-
-        // 合成方向向量
-        Vector3 dir = new Vector3(h, 0, v);
-
-        // 調整角色面對方向
-        // 判斷方向向量長度是否大於 0.1（代表有輸入）
-        if (dir.magnitude > 0.1f)
+            if (dir.magnitude > 0.1f)
         {
             // 將方向向量轉為角度
             float faceAngle = Mathf.Atan2(h, v) * Mathf.Rad2Deg;
@@ -74,35 +64,34 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 地心引力 (y)
-        if (!controller.isGrounded)
-        {
-            dir.y = -9.8f * 30 * Time.deltaTime;
+            if (!cc.isGrounded)
+            {
+                dir.y = -9.8f * 30 * Time.deltaTime;
+            }
+            cc.Move(dir * Time.deltaTime * 10);
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (passedTime >= timerInterval)
+                {
+                    Instantiate(bullet, firePoint.transform.position, firePoint.transform.rotation);
+                    passedTime = 0;
+                }
+            }
+            
         }
-
-        // 移動角色位置
-        controller.Move(dir * speed * Time.deltaTime);
-
-
     }
 
-    void Fire()
+    private void OnTriggerEnter(Collider other)
     {
-        // 產生出子彈
-        Instantiate(bulletPrefab, firePoint.transform.position, transform.rotation);
+        if (other.gameObject.tag == "Teleport")
+            StartCoroutine(MyCoroutine());
     }
 
-
-    // 一直射擊的 Coroutine 函式
-    IEnumerator KeepShooting()
+    IEnumerator MyCoroutine()
     {
-        while (true)
-        {
-            // 射擊
-            Fire();
-
-            // 暫停 0.5 秒
-            yield return new WaitForSeconds(0.5f);
-        }
+        ControlTime = 1;
+        yield return new WaitForSeconds(1);
+        ControlTime = 0;
     }
 }
