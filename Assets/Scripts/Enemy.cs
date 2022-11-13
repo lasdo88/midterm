@@ -18,16 +18,16 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // ¦pªG¸I¼²¨ìªº¬O¤l¼u
+        // ï¿½pï¿½Gï¿½Iï¿½ï¿½ï¿½ìªºï¿½Oï¿½lï¿½u
         if (other.tag == "Bullet")
         {
-            // ¥ý¨ú±o¤l¼uªº§ðÀ»¤O
+            // ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½lï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½O
             Bullet bullet = other.GetComponent<Bullet>();
 
-            // ¥ý¦©¦å
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             hp -= bullet.atk;
 
-            // ¦pªG¨S¦å¤F¡A´N§R°£¦Û¤v
+            // ï¿½pï¿½Gï¿½Sï¿½ï¿½Fï¿½Aï¿½Nï¿½Rï¿½ï¿½ï¿½Û¤v
             if (hp <= 0)
             {
                 gameObject.SetActive(false);

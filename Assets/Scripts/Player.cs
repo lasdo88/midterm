@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
     public Joystick joystick;
@@ -25,7 +26,6 @@ public class Player : MonoBehaviour
         if (ControlTime != 1)
         {
             GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
-
         float miniDist = 9999;
         foreach (GameObject enemy in enemys)
         {
@@ -78,7 +78,6 @@ public class Player : MonoBehaviour
                     passedTime = 0;
                 }
             }
-            
         }
     }
 
@@ -94,4 +93,4 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1);
         ControlTime = 0;
     }
-}
+}        
